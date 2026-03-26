@@ -96,6 +96,7 @@
             border-left: 1px solid #d1d5db;
             background-color: #fdfef1; /* Color amarillento típico de formularios */
             padding: 0;
+            flex-shrink: 0;
         }
         .box-input input, .box-input select {
             width: 100%;
@@ -131,20 +132,53 @@
             -webkit-appearance: none; 
             margin: 0; 
         }
+
+        /* Ajustes Responsivos para Teléfonos */
+        @media (max-width: 640px) {
+            .form-row {
+                flex-wrap: wrap;
+            }
+            .box-number {
+                width: 40px;
+                border-bottom: 1px solid #d1d5db;
+            }
+            .box-label {
+                width: calc(100% - 40px);
+                flex: none;
+                border-bottom: 1px solid #d1d5db;
+            }
+            .box-input {
+                width: 100%;
+                border-left: none;
+                height: 50px; /* Asegurar área de toque en móviles */
+            }
+            .box-input input, .box-input select {
+                font-size: 1.2rem; /* Texto más grande para lectura en móviles */
+                text-align: right;
+                padding: 10px 15px;
+            }
+            /* Quitar el borde inferior doble en móviles al apilar */
+            .box-number, .box-label {
+                border-bottom: none;
+            }
+            .box-input {
+                border-top: 1px dashed #d1d5db;
+            }
+        }
     </style>
 </head>
-<body class="text-gray-800 h-screen flex flex-col">
+<body class="text-gray-800 h-screen flex flex-col relative">
 
     <!-- Navbar / Header con Branding UniSalamanca -->
-    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <!-- Logo Tipográfico UniSalamanca -->
                 <div class="flex flex-col">
-                    <div class="font-heading font-bold text-2xl tracking-tight leading-none">
+                    <div class="font-heading font-bold text-xl sm:text-2xl tracking-tight leading-none">
                         <span class="text-uni-cyan">Uni</span><span class="text-uni-blue">Salamanca</span>
                     </div>
-                    <span class="text-[0.55rem] text-gray-500 leading-tight uppercase tracking-wider mt-1">Corp. Universitaria Empresarial</span>
+                    <span class="text-[0.50rem] sm:text-[0.55rem] text-gray-500 leading-tight uppercase tracking-wider mt-1">Corp. Universitaria Empresarial</span>
                 </div>
                 
                 <div class="w-px h-8 bg-gray-300 hidden sm:block"></div>
@@ -171,17 +205,17 @@
         <!-- PASO 1: Bienvenida -->
         <div id="step-1" class="step-container active w-full max-w-3xl">
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-10 text-center text-white relative overflow-hidden">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-6 sm:p-10 text-center text-white relative overflow-hidden">
                     <!-- Elemento decorativo de fondo -->
                     <div class="absolute top-0 right-0 w-64 h-64 bg-uni-cyan opacity-10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
                     
-                    <i class="fa-solid fa-calculator text-6xl mb-6 text-uni-cyan"></i>
-                    <h2 class="font-heading text-4xl font-bold mb-4">Taller Práctico RST</h2>
-                    <p class="text-lg text-slate-300 max-w-xl mx-auto relative z-10">Acompaña nuestra exposición usando este simulador. Descubre si cumples los requisitos y aprende a liquidar el impuesto en tiempo real.</p>
+                    <i class="fa-solid fa-calculator text-5xl sm:text-6xl mb-4 sm:mb-6 text-uni-cyan"></i>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-4">Taller Práctico RST</h2>
+                    <p class="text-base sm:text-lg text-slate-300 max-w-xl mx-auto relative z-10">Acompaña nuestra exposición usando este simulador. Descubre si cumples los requisitos y aprende a liquidar el impuesto en tiempo real.</p>
                 </div>
                 
-                <div class="p-8 pb-4 text-center bg-white">
-                    <button onclick="goToStep(2)" class="bg-uni-blue hover:bg-slate-800 text-white font-bold py-4 px-10 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-lg w-full sm:w-auto mb-8">
+                <div class="p-6 sm:p-8 pb-4 text-center bg-white">
+                    <button onclick="goToStep(2)" class="bg-uni-blue hover:bg-slate-800 text-white font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-base sm:text-lg w-full sm:w-auto mb-8">
                         Comenzar Taller <i class="fa-solid fa-arrow-right ml-2"></i>
                     </button>
 
@@ -191,12 +225,12 @@
                         
                         <!-- Imagen subida por el usuario -->
                         <div class="flex justify-center mb-4">
-                            <img src="image_d21b6d.png" alt="Presentación UniSalamanca" class="max-h-40 rounded-lg shadow-sm border border-gray-200 object-contain hover:scale-105 transition-transform duration-300">
+                            <img src="image_d21b6d.png" alt="Presentación UniSalamanca" class="max-h-32 sm:max-h-40 rounded-lg shadow-sm border border-gray-200 object-contain hover:scale-105 transition-transform duration-300">
                         </div>
 
                         <!-- Nombres transcritos -->
-                        <div class="bg-gray-50 rounded-xl p-4 inline-block shadow-inner border border-gray-100">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-gray-600 font-medium text-left">
+                        <div class="bg-gray-50 rounded-xl p-4 inline-block shadow-inner border border-gray-100 w-full sm:w-auto">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-xs sm:text-sm text-gray-600 font-medium text-left">
                                 <div><i class="fa-solid fa-user-graduate text-uni-cyan mr-2"></i>Eliana Gonzalez Cardenas</div>
                                 <div><i class="fa-solid fa-user-graduate text-uni-cyan mr-2"></i>John James Garcia Ramirez</div>
                                 <div><i class="fa-solid fa-user-graduate text-uni-cyan mr-2"></i>Jhonnatan David Acuña Guerra</div>
@@ -212,13 +246,13 @@
 
         <!-- PASO 2: Quiz de Requisitos -->
         <div id="step-2" class="step-container w-full max-w-3xl">
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                <h2 class="font-heading text-2xl font-bold text-gray-900 mb-2">Filtro de Ingreso al RST</h2>
-                <p class="text-gray-500 mb-8 border-b pb-4">Responde estas preguntas según el ejemplo dado en la exposición.</p>
+            <div class="bg-white rounded-2xl shadow-xl p-5 sm:p-8 border border-gray-100">
+                <h2 class="font-heading text-xl sm:text-2xl font-bold text-gray-900 mb-2">Filtro de Ingreso al RST</h2>
+                <p class="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8 border-b pb-4">Responde estas preguntas según el ejemplo dado en la exposición.</p>
 
-                <div class="space-y-6">
+                <div class="space-y-4 sm:space-y-6">
                     <!-- Pregunta 1 -->
-                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition">
+                    <div class="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
                         <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
                         <div class="flex-grow">
                             <h3 class="font-semibold text-gray-800">¿Eres residente fiscal en Colombia?</h3>
@@ -234,11 +268,11 @@
                     </div>
 
                     <!-- Pregunta 2 -->
-                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition">
+                    <div class="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
                         <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
                         <div class="flex-grow">
                             <h3 class="font-semibold text-gray-800">¿Tus ingresos brutos el año anterior fueron MENORES a 100.000 UVT (Aprox. $4.706 millones)?</h3>
-                            <div class="mt-3 flex gap-4">
+                            <div class="mt-3 flex flex-col sm:flex-row gap-3 sm:gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" name="q2" value="si" class="w-5 h-5 text-dian-green focus:ring-dian-green" onchange="checkQuiz()"> Sí (Fueron menores)
                                 </label>
@@ -250,11 +284,11 @@
                     </div>
 
                     <!-- Pregunta 3 -->
-                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition">
+                    <div class="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
                         <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
                         <div class="flex-grow">
                             <h3 class="font-semibold text-gray-800">¿Tienes una relación laboral (eres empleado asalariado) que genere esos ingresos?</h3>
-                            <div class="mt-3 flex gap-4">
+                            <div class="mt-3 flex flex-col sm:flex-row gap-3 sm:gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" name="q3" value="si" class="w-5 h-5 text-red-500 focus:ring-red-500" onchange="checkQuiz()"> Sí
                                 </label>
@@ -271,11 +305,11 @@
                     <!-- Contenido inyectado por JS -->
                 </div>
 
-                <div class="mt-8 flex justify-between items-center border-t pt-6">
-                    <button onclick="goToStep(1)" class="text-gray-500 hover:text-gray-800 font-medium px-4 py-2">
+                <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-6">
+                    <button onclick="goToStep(1)" class="w-full sm:w-auto text-gray-500 hover:text-gray-800 font-medium px-4 py-2 order-2 sm:order-1 border sm:border-transparent rounded-lg">
                         <i class="fa-solid fa-arrow-left mr-2"></i> Volver
                     </button>
-                    <button id="btn-to-form" onclick="goToStep(3)" class="hidden bg-dian-green hover:bg-dian-dark text-white font-bold py-3 px-8 rounded-lg shadow transition-colors">
+                    <button id="btn-to-form" onclick="goToStep(3)" class="hidden w-full sm:w-auto bg-dian-green hover:bg-dian-dark text-white font-bold py-3 px-8 rounded-lg shadow transition-colors order-1 sm:order-2">
                         Ir al Formulario 260 <i class="fa-solid fa-file-invoice-dollar ml-2"></i>
                     </button>
                 </div>
@@ -283,16 +317,66 @@
         </div>
 
         <!-- PASO 3: Simulador Formulario 260 -->
-        <div id="step-3" class="step-container w-full max-w-5xl my-8">
+        <div id="step-3" class="step-container w-full max-w-5xl my-4 sm:my-8 relative">
             
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <!-- BOTÓN FLOTANTE PARA MÓVILES (Fijo en la parte inferior) -->
+            <button onclick="toggleDataModal()" class="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-uni-blue hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-full shadow-2xl flex items-center gap-2 z-30 border-2 border-uni-cyan animate-bounce">
+                <i class="fa-solid fa-clipboard-list text-uni-cyan"></i> <span class="tracking-wide">Ver Datos</span>
+            </button>
+
+            <!-- MODAL / BOTTOM SHEET DE DATOS PARA MÓVILES -->
+            <div id="mobileDataModal" class="fixed inset-0 z-50 hidden transition-opacity duration-300 opacity-0 lg:hidden">
+                <!-- Fondo oscuro desenfocado -->
+                <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm" onclick="toggleDataModal()"></div>
                 
-                <!-- Panel de Instrucciones Lateral -->
-                <div class="lg:col-span-1 bg-uni-blue rounded-2xl p-6 text-white shadow-xl sticky top-24 border border-slate-700">
-                    <h3 class="font-heading font-bold text-xl mb-4 text-uni-cyan border-b border-slate-600 pb-2">Datos del Ejercicio</h3>
-                    <p class="text-slate-300 text-sm mb-6">Llena el formulario con los siguientes datos a medida que los mencionamos:</p>
+                <!-- Contenedor del panel que sube -->
+                <div class="absolute bottom-0 left-0 right-0 bg-uni-blue rounded-t-3xl p-6 text-white transform transition-transform duration-300 translate-y-full shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border-t border-slate-600" id="mobileDataSheet">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-600 pb-3">
+                        <h3 class="font-heading font-bold text-xl text-uni-cyan"><i class="fa-solid fa-clipboard-check mr-2"></i>Datos del Ejercicio</h3>
+                        <button onclick="toggleDataModal()" class="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-full text-slate-300 hover:text-white hover:bg-slate-700 transition">
+                            <i class="fa-solid fa-chevron-down text-xl"></i>
+                        </button>
+                    </div>
                     
-                    <ul class="space-y-4 text-sm">
+                    <ul class="space-y-3 text-sm mb-4">
+                        <li class="flex items-center gap-3 bg-slate-800 p-3 rounded-lg border border-slate-600">
+                            <i class="fa-solid fa-1 text-uni-cyan"></i>
+                            <div>
+                                <span class="text-slate-400 text-xs">Casilla 41:</span> <strong class="text-white">Ingresos $150.000.000</strong>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3 bg-slate-800 p-3 rounded-lg border border-slate-600">
+                            <i class="fa-solid fa-2 text-uni-cyan"></i>
+                            <div>
+                                <span class="text-slate-400 text-xs">Casilla 42:</span> <strong class="text-white">Actividad Grupo 2</strong>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3 bg-slate-800 p-3 rounded-lg border border-slate-600">
+                            <i class="fa-solid fa-3 text-uni-cyan"></i>
+                            <div>
+                                <span class="text-slate-400 text-xs">Casilla 44:</span> <strong class="text-white">Pensión $1.500.000</strong>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3 bg-slate-800 p-3 rounded-lg border border-slate-600">
+                            <i class="fa-solid fa-4 text-uni-cyan"></i>
+                            <div>
+                                <span class="text-slate-400 text-xs">Casilla 45:</span> <strong class="text-white">Datáfono $100.000.000</strong>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- Espacio seguro para dispositivos como iPhone con barra abajo -->
+                    <div class="h-6"></div> 
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+                
+                <!-- Panel de Instrucciones Lateral (SOLO VISIBLE EN COMPUTADORAS) -->
+                <div class="hidden lg:block lg:col-span-1 bg-uni-blue rounded-2xl p-5 sm:p-6 text-white shadow-xl lg:sticky lg:top-24 border border-slate-700">
+                    <h3 class="font-heading font-bold text-lg sm:text-xl mb-4 text-uni-cyan border-b border-slate-600 pb-2">Datos del Ejercicio</h3>
+                    <p class="text-slate-300 text-xs sm:text-sm mb-6">Llena el formulario con los siguientes datos a medida que los mencionamos:</p>
+                    
+                    <ul class="space-y-3 sm:space-y-4 text-sm">
                         <li class="flex items-start gap-3 bg-slate-800/50 p-3 rounded-lg border border-slate-600">
                             <i class="fa-solid fa-1 text-uni-cyan mt-1"></i>
                             <div>
@@ -324,28 +408,28 @@
                     </ul>
 
                     <div class="mt-6 pt-4 border-t border-slate-600">
-                        <p class="text-xs text-slate-300 italic"><i class="fa-solid fa-lightbulb text-yellow-400 mr-1"></i> Observa cómo los descuentos reducen el impuesto a pagar radicalmente.</p>
+                        <p class="text-[0.7rem] sm:text-xs text-slate-300 italic"><i class="fa-solid fa-lightbulb text-yellow-400 mr-1"></i> Observa cómo los descuentos reducen el impuesto a pagar radicalmente.</p>
                     </div>
                 </div>
 
                 <!-- El Formulario (Réplica Visual) -->
-                <div class="lg:col-span-2 form-dian rounded-lg overflow-hidden">
+                <div class="lg:col-span-2 form-dian rounded-lg overflow-hidden pb-16 lg:pb-0"> <!-- Padding extra en móvil para el botón flotante -->
                     <!-- Cabecera DIAN -->
                     <div class="form-dian-header bg-white flex flex-col sm:flex-row items-center justify-between p-4">
-                        <div class="flex items-center gap-4 mb-4 sm:mb-0">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Logo_de_la_DIAN.svg/1024px-Logo_de_la_DIAN.svg.png" alt="Logo Entidad" class="h-12 object-contain grayscale opacity-80">
+                        <div class="flex flex-col sm:flex-row items-center gap-4 mb-4 sm:mb-0 text-center sm:text-left">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Logo_de_la_DIAN.svg/1024px-Logo_de_la_DIAN.svg.png" alt="Logo Entidad" class="h-10 sm:h-12 object-contain grayscale opacity-80">
                             <div>
-                                <h2 class="font-bold text-lg leading-tight">Declaración Anual Consolidada</h2>
-                                <p class="text-xs text-gray-500">Régimen Simple de Tributación (RST)</p>
+                                <h2 class="font-bold text-base sm:text-lg leading-tight">Declaración Anual Consolidada</h2>
+                                <p class="text-[0.7rem] sm:text-xs text-gray-500">Régimen Simple de Tributación (RST)</p>
                             </div>
                         </div>
-                        <div class="text-center border-2 border-gray-800 p-2 w-32">
+                        <div class="text-center border-2 border-gray-800 p-2 w-full sm:w-32 mt-2 sm:mt-0">
                             <p class="text-xs font-bold text-gray-500">Formulario</p>
-                            <h1 class="text-3xl font-bold text-gray-800">260</h1>
+                            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">260</h1>
                         </div>
                     </div>
 
-                    <div class="bg-gray-200 text-center py-1 text-xs font-bold text-gray-600 border-b border-gray-300 tracking-widest uppercase">
+                    <div class="bg-gray-200 text-center py-1 text-[0.65rem] sm:text-xs font-bold text-gray-600 border-b border-gray-300 tracking-widest uppercase">
                         Liquidación del Impuesto
                     </div>
 
@@ -390,7 +474,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-gray-200 text-center py-1 text-xs font-bold text-gray-600 border-y border-gray-300 tracking-widest uppercase">
+                    <div class="bg-gray-200 text-center py-1 text-[0.65rem] sm:text-xs font-bold text-gray-600 border-y border-gray-300 tracking-widest uppercase">
                         Descuentos Permitidos
                     </div>
 
@@ -429,7 +513,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-gray-200 text-center py-1 text-xs font-bold text-gray-600 border-y border-gray-300 tracking-widest uppercase">
+                    <div class="bg-gray-200 text-center py-1 text-[0.65rem] sm:text-xs font-bold text-gray-600 border-y border-gray-300 tracking-widest uppercase">
                         Liquidación Final
                     </div>
 
@@ -449,11 +533,11 @@
                     <div class="form-row">
                         <div class="box-number text-white bg-dian-dark">48</div>
                         <div class="box-label bg-dian-light">
-                            <span class="font-bold text-dian-dark text-lg">TOTAL SALDO A PAGAR</span>
-                            <span class="text-xs text-dian-dark">Impuesto (43) - Descuentos (44, 46) - Anticipos (47)</span>
+                            <span class="font-bold text-dian-dark text-base sm:text-lg">TOTAL SALDO A PAGAR</span>
+                            <span class="text-[0.65rem] sm:text-xs text-dian-dark">Impuesto (43) - Descuentos (44, 46) - Anticipos (47)</span>
                         </div>
                         <div class="box-input total-box">
-                            <input type="text" id="f_total_pagar" value="$ 0" readonly class="text-xl">
+                            <input type="text" id="f_total_pagar" value="$ 0" readonly class="text-lg sm:text-xl">
                         </div>
                     </div>
                 </div>
@@ -462,7 +546,7 @@
             <!-- Boton de conclusion -->
             <div class="mt-8 text-center" id="conclusion-btn-container" style="display:none;">
                 <p class="mb-4 text-gray-600 italic font-medium">"Como ven, los descuentos redujeron el impuesto drásticamente".</p>
-                <button onclick="location.reload()" class="text-uni-blue font-bold hover:text-uni-cyan transition-colors">
+                <button onclick="location.reload()" class="text-uni-blue font-bold hover:text-uni-cyan transition-colors border-2 border-uni-blue px-6 py-2 rounded-full mb-8">
                     <i class="fa-solid fa-rotate-right mr-1"></i> Reiniciar Taller
                 </button>
             </div>
@@ -489,6 +573,9 @@
             });
             // Mostrar destino
             document.getElementById(`step-${step}`).classList.add('active');
+            
+            // Hacer scroll hacia arriba al cambiar de paso en móviles
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
             // Actualizar header visual
             for(let i=1; i<=3; i++) {
@@ -500,6 +587,32 @@
                 } else {
                     navItem.className = "px-3 py-1 rounded-full bg-gray-100 text-gray-400 transition-colors";
                 }
+            }
+        }
+
+        // Lógica del Panel Flotante para Móviles (Modal / Bottom Sheet)
+        function toggleDataModal() {
+            const modal = document.getElementById('mobileDataModal');
+            const sheet = document.getElementById('mobileDataSheet');
+            
+            if (modal.classList.contains('hidden')) {
+                // Abrir: primero quitamos el 'hidden', luego animamos la opacidad y el panel
+                modal.classList.remove('hidden');
+                // Un pequeño timeout para que el navegador procese el display block antes de animar
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.add('opacity-100');
+                    sheet.classList.remove('translate-y-full');
+                }, 10);
+            } else {
+                // Cerrar: animamos la salida, y luego ponemos 'hidden'
+                sheet.classList.add('translate-y-full');
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300); // 300ms debe coincidir con la duración de la transición en CSS
             }
         }
 
