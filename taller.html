@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Interactivo: Régimen Simple de Tributación</title>
+    <!-- Tailwind CSS para el diseño rápido y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        dian: {
+                            green: '#008C44',
+                            light: '#E6F3EB',
+                            dark: '#00592D'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .step-container {
+            display: none;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .step-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilos para imitar el formulario oficial */
+        .form-dian {
+            border: 2px solid #374151;
+            background-color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .form-dian-header {
+            border-bottom: 2px solid #374151;
+        }
+        .form-row {
+            border-bottom: 1px solid #d1d5db;
+            display: flex;
+            align-items: stretch;
+        }
+        .form-row:last-child {
+            border-bottom: none;
+        }
+        .box-number {
+            background-color: #f3f4f6;
+            border-right: 1px solid #d1d5db;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #4b5563;
+        }
+        .box-label {
+            flex-grow: 1;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .box-input {
+            width: 200px;
+            border-left: 1px solid #d1d5db;
+            background-color: #fdfef1; /* Color amarillento típico de formularios */
+            padding: 0;
+        }
+        .box-input input, .box-input select {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            text-align: right;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        .box-input input:focus, .box-input select:focus {
+            background-color: #e0f2fe;
+        }
+        .box-input.calculated {
+            background-color: #e5e7eb;
+        }
+        .box-input.calculated input {
+            color: #111827;
+        }
+        .box-input.total-box {
+            background-color: #008C44;
+        }
+        .box-input.total-box input {
+            color: white;
+        }
+
+        /* Ocultar flechas del input number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="text-gray-800 h-screen flex flex-col">
+
+    <!-- Navbar / Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-dian-green rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    RST
+                </div>
+                <div>
+                    <h1 class="font-heading font-bold text-xl text-gray-900 leading-tight">Simulador Interactivo</h1>
+                    <p class="text-xs text-gray-500">Régimen Simple de Tributación - Colombia</p>
+                </div>
+            </div>
+            
+            <!-- Indicador de progreso -->
+            <div class="hidden md:flex items-center gap-2 text-sm font-medium">
+                <span id="nav-step-1" class="px-3 py-1 rounded-full bg-dian-green text-white transition-colors">1. Inicio</span>
+                <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                <span id="nav-step-2" class="px-3 py-1 rounded-full bg-gray-100 text-gray-400 transition-colors">2. Requisitos</span>
+                <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                <span id="nav-step-3" class="px-3 py-1 rounded-full bg-gray-100 text-gray-400 transition-colors">3. Formulario 260</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <main class="flex-grow flex items-center justify-center p-4 overflow-y-auto">
+        
+        <!-- PASO 1: Bienvenida -->
+        <div id="step-1" class="step-container active w-full max-w-3xl">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-10 text-center text-white">
+                    <i class="fa-solid fa-calculator text-6xl mb-6 text-dian-green"></i>
+                    <h2 class="font-heading text-4xl font-bold mb-4">Taller Práctico RST</h2>
+                    <p class="text-lg text-slate-300 max-w-xl mx-auto">Acompaña la exposición usando este simulador. Descubre si cumples los requisitos y aprende a liquidar el impuesto en un formulario real simplificado.</p>
+                </div>
+                <div class="p-8 text-center bg-white">
+                    <p class="mb-8 text-gray-600">Sigue las instrucciones de los expositores para avanzar.</p>
+                    <button onclick="goToStep(2)" class="bg-dian-green hover:bg-dian-dark text-white font-bold py-4 px-10 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-lg">
+                        Comenzar Taller <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 2: Quiz de Requisitos -->
+        <div id="step-2" class="step-container w-full max-w-3xl">
+            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                <h2 class="font-heading text-2xl font-bold text-gray-900 mb-2">Filtro de Ingreso al RST</h2>
+                <p class="text-gray-500 mb-8 border-b pb-4">Responde estas preguntas según el ejemplo dado por los expositores.</p>
+
+                <div class="space-y-6">
+                    <!-- Pregunta 1 -->
+                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition">
+                        <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-gray-800">¿Eres residente fiscal en Colombia?</h3>
+                            <div class="mt-3 flex gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="q1" value="si" class="w-5 h-5 text-dian-green focus:ring-dian-green" onchange="checkQuiz()"> Sí
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="q1" value="no" class="w-5 h-5 text-red-500 focus:ring-red-500" onchange="checkQuiz()"> No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 2 -->
+                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition">
+                        <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-gray-800">¿Tus ingresos brutos el año anterior fueron MENORES a 100.000 UVT (Aprox. $4.706 millones)?</h3>
+                            <div class="mt-3 flex gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="q2" value="si" class="w-5 h-5 text-dian-green focus:ring-dian-green" onchange="checkQuiz()"> Sí (Fueron menores)
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="q2" value="no" class="w-5 h-5 text-red-500 focus:ring-red-500" onchange="checkQuiz()"> No (Superé el tope)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 3 -->
+                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition">
+                        <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-gray-800">¿Tienes una relación laboral (eres empleado asalariado) que genere esos ingresos?</h3>
+                            <div class="mt-3 flex gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="q3" value="si" class="w-5 h-5 text-red-500 focus:ring-red-500" onchange="checkQuiz()"> Sí
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="q3" value="no" class="w-5 h-5 text-dian-green focus:ring-dian-green" onchange="checkQuiz()"> No (Soy independiente/empresa)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje de resultado oculto por defecto -->
+                <div id="quiz-result" class="hidden mt-8 p-4 rounded-xl text-center border">
+                    <!-- Contenido inyectado por JS -->
+                </div>
+
+                <div class="mt-8 flex justify-between items-center border-t pt-6">
+                    <button onclick="goToStep(1)" class="text-gray-500 hover:text-gray-800 font-medium px-4 py-2">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Volver
+                    </button>
+                    <button id="btn-to-form" onclick="goToStep(3)" class="hidden bg-dian-green hover:bg-dian-dark text-white font-bold py-3 px-8 rounded-lg shadow transition-colors">
+                        Ir al Formulario 260 <i class="fa-solid fa-file-invoice-dollar ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 3: Simulador Formulario 260 -->
+        <div id="step-3" class="step-container w-full max-w-5xl my-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <!-- Panel de Instrucciones Lateral -->
+                <div class="lg:col-span-1 bg-slate-900 rounded-2xl p-6 text-white shadow-xl sticky top-24">
+                    <h3 class="font-heading font-bold text-xl mb-4 text-dian-green border-b border-slate-700 pb-2">Datos del Ejercicio</h3>
+                    <p class="text-slate-300 text-sm mb-6">Llena el formulario con los siguientes datos a medida que el expositor los menciona:</p>
+                    
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-start gap-3 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i class="fa-solid fa-1 text-dian-green mt-1"></i>
+                            <div>
+                                <span class="block text-slate-400 text-xs">Casilla 41</span>
+                                <strong class="text-white block">Ingresos: $150.000.000</strong>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i class="fa-solid fa-2 text-dian-green mt-1"></i>
+                            <div>
+                                <span class="block text-slate-400 text-xs">Casilla 42</span>
+                                <strong class="text-white block">Actividad: Grupo 2 (Comercio 1.6%)</strong>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i class="fa-solid fa-3 text-dian-green mt-1"></i>
+                            <div>
+                                <span class="block text-slate-400 text-xs">Casilla 44</span>
+                                <strong class="text-white block">Aportes a Pensión pagados: $1.500.000</strong>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i class="fa-solid fa-4 text-dian-green mt-1"></i>
+                            <div>
+                                <span class="block text-slate-400 text-xs">Casilla 45</span>
+                                <strong class="text-white block">Ingresos por Datáfono/Bancos: $100.000.000</strong>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="mt-6 pt-4 border-t border-slate-700">
+                        <p class="text-xs text-slate-400 italic"><i class="fa-solid fa-lightbulb text-yellow-500 mr-1"></i> Observa cómo los descuentos reducen el impuesto a pagar radicalmente.</p>
+                    </div>
+                </div>
+
+                <!-- El Formulario (Réplica Visual) -->
+                <div class="lg:col-span-2 form-dian rounded-lg overflow-hidden">
+                    <!-- Cabecera DIAN -->
+                    <div class="form-dian-header bg-white flex flex-col sm:flex-row items-center justify-between p-4">
+                        <div class="flex items-center gap-4 mb-4 sm:mb-0">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Logo_de_la_DIAN.svg/1024px-Logo_de_la_DIAN.svg.png" alt="Logo Entidad" class="h-12 object-contain grayscale opacity-80">
+                            <div>
+                                <h2 class="font-bold text-lg leading-tight">Declaración Anual Consolidada</h2>
+                                <p class="text-xs text-gray-500">Régimen Simple de Tributación (RST)</p>
+                            </div>
+                        </div>
+                        <div class="text-center border-2 border-gray-800 p-2 w-32">
+                            <p class="text-xs font-bold text-gray-500">Formulario</p>
+                            <h1 class="text-3xl font-bold text-gray-800">260</h1>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-200 text-center py-1 text-xs font-bold text-gray-600 border-b border-gray-300 tracking-widest uppercase">
+                        Liquidación del Impuesto
+                    </div>
+
+                    <!-- Seccion Ingresos -->
+                    <div class="form-row">
+                        <div class="box-number">41</div>
+                        <div class="box-label">
+                            <span class="font-bold">Ingresos brutos anuales</span>
+                            <span class="text-xs text-gray-500">Sin restar costos ni gastos. Digita sin puntos.</span>
+                        </div>
+                        <div class="box-input">
+                            <input type="number" id="f_ingresos" placeholder="0" oninput="calcularImpuesto()">
+                        </div>
+                    </div>
+
+                    <!-- Seccion Tarifa -->
+                    <div class="form-row">
+                        <div class="box-number">42</div>
+                        <div class="box-label">
+                            <span class="font-bold">Grupo de Actividad Económica (Tarifa)</span>
+                            <span class="text-xs text-gray-500">Selecciona el grupo correspondiente.</span>
+                        </div>
+                        <div class="box-input" style="background-color: white;">
+                            <select id="f_tarifa" onchange="calcularImpuesto()">
+                                <option value="0">Seleccione...</option>
+                                <option value="0.012">Grupo 1 (Tiendas) - 1.2%</option>
+                                <option value="0.016">Grupo 2 (Comercio/Industria) - 1.6%</option>
+                                <option value="0.073">Grupo 3 (Servicios Prof.) - 7.3%</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Seccion Impuesto Liquidado -->
+                    <div class="form-row">
+                        <div class="box-number">43</div>
+                        <div class="box-label">
+                            <span class="font-bold">Impuesto SIMPLE Liquidado</span>
+                            <span class="text-xs text-gray-500">Cálculo automático: Casilla 41 x Casilla 42</span>
+                        </div>
+                        <div class="box-input calculated">
+                            <input type="text" id="f_impuesto_liquidado" value="$ 0" readonly>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-200 text-center py-1 text-xs font-bold text-gray-600 border-y border-gray-300 tracking-widest uppercase">
+                        Descuentos Permitidos
+                    </div>
+
+                    <!-- Seccion Descuento Pension -->
+                    <div class="form-row">
+                        <div class="box-number">44</div>
+                        <div class="box-label">
+                            <span class="font-bold">Aportes a pensiones a cargo del empleador</span>
+                            <span class="text-xs text-gray-500">Valor total pagado en el año.</span>
+                        </div>
+                        <div class="box-input">
+                            <input type="number" id="f_pension" placeholder="0" oninput="calcularImpuesto()">
+                        </div>
+                    </div>
+
+                    <!-- Seccion Pagos Electronicos -->
+                    <div class="form-row bg-gray-50">
+                        <div class="box-number">45</div>
+                        <div class="box-label">
+                            <span class="font-bold">Ingresos recibidos por medios electrónicos</span>
+                            <span class="text-xs text-gray-500">Tarjetas, transferencias. (Se descontará el 0.5%)</span>
+                        </div>
+                        <div class="box-input">
+                            <input type="number" id="f_ingresos_electronicos" placeholder="0" oninput="calcularImpuesto()">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="box-number">46</div>
+                        <div class="box-label">
+                            <span class="font-bold">Valor descuento 0.5% pagos electrónicos</span>
+                            <span class="text-xs text-gray-500">Cálculo automático: Casilla 45 x 0.5%</span>
+                        </div>
+                        <div class="box-input calculated">
+                            <input type="text" id="f_descuento_electronico" value="$ 0" readonly>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-200 text-center py-1 text-xs font-bold text-gray-600 border-y border-gray-300 tracking-widest uppercase">
+                        Liquidación Final
+                    </div>
+
+                    <!-- Anticipos -->
+                    <div class="form-row">
+                        <div class="box-number">47</div>
+                        <div class="box-label">
+                            <span class="font-bold">Anticipos pagados en el año (Recibos 2593)</span>
+                            <span class="text-xs text-gray-500">Suma de lo ya pagado bimestralmente.</span>
+                        </div>
+                        <div class="box-input">
+                            <input type="number" id="f_anticipos" placeholder="0" oninput="calcularImpuesto()">
+                        </div>
+                    </div>
+
+                    <!-- TOTAL -->
+                    <div class="form-row">
+                        <div class="box-number text-white bg-dian-dark">48</div>
+                        <div class="box-label bg-dian-light">
+                            <span class="font-bold text-dian-dark text-lg">TOTAL SALDO A PAGAR</span>
+                            <span class="text-xs text-dian-dark">Impuesto (43) - Descuentos (44, 46) - Anticipos (47)</span>
+                        </div>
+                        <div class="box-input total-box">
+                            <input type="text" id="f_total_pagar" value="$ 0" readonly class="text-xl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boton de conclusion -->
+            <div class="mt-8 text-center" id="conclusion-btn-container" style="display:none;">
+                <p class="mb-4 text-gray-600 italic">"Como ven, los descuentos redujeron el impuesto drásticamente".</p>
+                <button onclick="location.reload()" class="text-dian-green font-bold hover:underline">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Reiniciar Taller
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Scripts de Lógica -->
+    <script>
+        // Utilidad para formatear moneda
+        const formatter = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+
+        // Navegación entre pasos
+        function goToStep(step) {
+            // Ocultar todos
+            document.querySelectorAll('.step-container').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Mostrar destino
+            document.getElementById(`step-${step}`).classList.add('active');
+
+            // Actualizar header visual
+            for(let i=1; i<=3; i++) {
+                const navItem = document.getElementById(`nav-step-${i}`);
+                if(i < step) {
+                    navItem.className = "px-3 py-1 rounded-full bg-dian-green text-white transition-colors";
+                } else if (i === step) {
+                    navItem.className = "px-3 py-1 rounded-full bg-dian-green text-white transition-colors ring-2 ring-offset-2 ring-dian-green";
+                } else {
+                    navItem.className = "px-3 py-1 rounded-full bg-gray-100 text-gray-400 transition-colors";
+                }
+            }
+        }
+
+        // Lógica del Quiz (Paso 2)
+        function checkQuiz() {
+            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+            const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+
+            const resultDiv = document.getElementById('quiz-result');
+            const btnNext = document.getElementById('btn-to-form');
+
+            // Si no ha respondido todas, no hacer nada
+            if(!q1 || !q2 || !q3) return;
+
+            resultDiv.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'bg-green-50', 'border-green-200');
+
+            // Validación según las reglas del RST
+            // Residente (si), Ingresos < 100k UVT (si), Empleado (no)
+            if(q1 === 'si' && q2 === 'si' && q3 === 'no') {
+                resultDiv.classList.add('bg-green-50', 'border-green-200');
+                resultDiv.innerHTML = `
+                    <i class="fa-solid fa-circle-check text-4xl text-green-500 mb-2"></i>
+                    <h4 class="font-bold text-green-800 text-lg">¡Excelente!</h4>
+                    <p class="text-green-700">Según la ley, cumples los requisitos básicos para pertenecer al Régimen Simple.</p>
+                `;
+                btnNext.classList.remove('hidden');
+            } else {
+                resultDiv.classList.add('bg-red-50', 'border-red-200');
+                resultDiv.innerHTML = `
+                    <i class="fa-solid fa-circle-xmark text-4xl text-red-500 mb-2"></i>
+                    <h4 class="font-bold text-red-800 text-lg">No cumples los requisitos</h4>
+                    <p class="text-red-700">Alguna de tus respuestas incumple el artículo 905 o 906 del Estatuto Tributario. Debes tributar en el Régimen Ordinario.</p>
+                `;
+                btnNext.classList.add('hidden');
+            }
+        }
+
+        // Lógica del Calculadora (Paso 3)
+        function calcularImpuesto() {
+            // Obtener valores (o 0 si están vacíos)
+            const ingresos = parseFloat(document.getElementById('f_ingresos').value) || 0;
+            const tarifa = parseFloat(document.getElementById('f_tarifa').value) || 0;
+            const pension = parseFloat(document.getElementById('f_pension').value) || 0;
+            const ingresosElec = parseFloat(document.getElementById('f_ingresos_electronicos').value) || 0;
+            const anticipos = parseFloat(document.getElementById('f_anticipos').value) || 0;
+
+            // 1. Calcular Impuesto Liquidado
+            const impuestoLiquidado = ingresos * tarifa;
+            document.getElementById('f_impuesto_liquidado').value = formatter.format(impuestoLiquidado);
+
+            // 2. Calcular Descuento por pagos electrónicos (0.5%)
+            const descuentoElec = ingresosElec * 0.005;
+            document.getElementById('f_descuento_electronico').value = formatter.format(descuentoElec);
+
+            // 3. Calcular Total a Pagar
+            // La DIAN no devuelve plata aquí, si da negativo es saldo a favor, pero para el ejercicio lo topamos en 0.
+            let totalAPagar = impuestoLiquidado - pension - descuentoElec - anticipos;
+            
+            // Lógica fiscal básica: Los descuentos no pueden ser mayores al impuesto (en la vida real generan saldo a favor en algunos casos, pero simplifiquemos)
+            const inputTotal = document.getElementById('f_total_pagar');
+            
+            if (totalAPagar < 0) {
+                inputTotal.value = "$ 0 (Saldo a favor)";
+            } else {
+                inputTotal.value = formatter.format(totalAPagar);
+            }
+
+            // Si ya llenó datos de ejemplo, mostrar boton final
+            if(ingresos > 0 && tarifa > 0) {
+                document.getElementById('conclusion-btn-container').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
